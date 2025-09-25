@@ -78,22 +78,21 @@ async def start(bot, m: Message):
         f"Checking subscription status... 🔍\n\n"
         f"Progress: [🟨🟨🟨🟨🟨🟨🟨🟨⬜️⬜️] 75%\n\n"
     )
-    await asyncio.sleep(1)
+
+await asyncio.sleep(1)
     if m.chat.id in AUTH_USERS:
         keyboard = InlineKeyboardMarkup([
             [InlineKeyboardButton("✨ Commands", callback_data="cmd_command")],
             [InlineKeyboardButton("💎 Features", callback_data="feat_command"), InlineKeyboardButton("⚙️ Settings", callback_data="setttings")],
             [InlineKeyboardButton("💳 Plans", callback_data="upgrade_command")],
-            [InlineKeyboardButton(text="📞 Contact", url= "https://t.me/TeamJB_bot"), InlineKeyboardButton(text="🛠️ Repo", url="https://t.me/TeamJB_bot")],
+            [InlineKeyboardButton(text="📞 Contact", url="https://t.me/TeamJB_bot"), InlineKeyboardButton(text="🛠️ Repo", url="https://t.me/TeamJB_bot")],
         ])      
         await start_message.edit_text(
-        f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
-        f"Great! You are a premium member!\n"
-        f"Use button : **✨ Commands** to get started 🌟\n\n"
-       f"If you face any problem contact - <a href='https://t.me/TeamJB_bot'>TeamJB Bot</a>,\n\n"
+            f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
+            f"Great! You are a premium member!\n"
+            f"Use button : **✨ Commands** to get started 🌟\n\n"
+            f"If you face any problem contact -  [{CREDIT}⁬](tg://openmessage?user_id={OWNER})\n", disable_web_page_preview=True, reply_markup=keyboard
         )
-    
-    
     else:
         await asyncio.sleep(2)
         keyboard = InlineKeyboardMarkup([
@@ -105,8 +104,7 @@ async def start(bot, m: Message):
         await start_message.edit_text(
            f" 🎉 Welcome {m.from_user.first_name} to DRM Bot! 🎉\n\n"
            f"**You are currently using the free version.** 🆓\n\n<blockquote expandable>I'm here to make your life easier by downloading videos from your **.txt** file 📄 and uploading them directly to Telegram!</blockquote>\n\n**Want to get started? Press /id**\n\n💬 Contact : [{CREDIT}⁬](tg://openmessage?user_id={OWNER}) to Get The Subscription 🎫 and unlock the full potential of your new bot! 🔓\n", disable_web_page_preview=True, reply_markup=keyboard
-    )
-
+        )
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
 @bot.on_callback_query(filters.regex("back_to_main_menu"))
 async def back_to_main_menu(client, callback_query):
