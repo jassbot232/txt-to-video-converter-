@@ -1,30 +1,38 @@
-# # Us# Base image
-FROM python:3.12-alpine3.20
+# Use Debian slim as base (Python installed manually)
+FROM debian:bookworm-slim
+
+# Install system dependencies and Python
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-venv python3-pip python3-dev \
+    gcc libffi-dev ffmpeg aria2 make g++ cmake wget unzip \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements file
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the code
+# Copy all project files
 COPY . .
 
-# Install system dependencies
-RUN apk add --no-cache \
-    gcc \
-    g++ \
-    musl-dev \
-    libffi-dev \
-    ffmpeg \
-    make \
-    aria2
+# Create a Python virtual environment
+RUN python3 -m venv /opt/venv
+# Make venv's bin folder default in PATH
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Expose port for Koyeb health check
-EXPOSE 8080
+# Upgrade pip and install Python dependencies in venv
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r sainibots.txt \
+    && pip install --no-cache-dir -U yt-dlp
 
-# Start the app (Koyeb uses $PORT)
-CMD ["sh", "-c", "gunicorn -w 4 -b 0.0.0.0:${PORT:-8080} app:app"]
+# Build and install Bento4 (mp4decrypt)
+RUN wget -q https://github.com/axiomatic-systems/Bento4/archive/v1.6.0-639.zip \
+    && unzip v1.6.0-639.zip \
+    && cd Bento4-1.6.0-639 && mkdir build && cd build \
+    && cmake .. && make -j$(nproc) \
+    && cp mp4decrypt /usr/local/bin/ \
+    && cd ../.. && rm -rf Bento4-1.6.0-639 v1.6.0-639.zip
+
+# Expose port for Gunicorn
+EXPOSE 8000
+
+# Run Gunicorn + your Python script
+CMD ["sh", "-c", "gunicorn app:app --bind 0.0.0.0:8000 & python3 modules/main.py"]
