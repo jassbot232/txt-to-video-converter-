@@ -90,14 +90,10 @@ async def start(bot, m: Message):
         f"🌟 Welcome {m.from_user.first_name}! 🌟\n\n" +
         f"Great! You are a premium member!\n"
         f"Use button : **✨ Commands** to get started 🌟\n\n"
-    )
+       f"If you face any problem contact - <a href='https://t.me/TeamJB_bot'>TeamJB Bot</a>,\n\n"
+        )
     
-    await m.reply_text(
-        'If you face any problem contact - <a href="https://t.me/TeamJB_bot">TeamJB Bot</a>',
-        disable_web_page_preview=True,
-        reply_markup=keyboard,
-        parse_mode="html"
-    )
+    
     else:
         await asyncio.sleep(2)
         keyboard = InlineKeyboardMarkup([
