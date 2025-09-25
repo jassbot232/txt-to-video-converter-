@@ -1,5 +1,5 @@
-# Use a stable Python 3.12 slim base image
-FROM python:3.12-slim
+# Use a stable Python 3.12 slim base image from Docker Hub
+FROM docker.io/python:3.12-slim
 
 # Set the working directory
 WORKDIR /app
