@@ -1,17 +1,17 @@
-# Use Python 3.12 Alpine base image
+# # Use Python 3.12 Alpine base image
 FROM python:3.12-alpine3.20
 
 # Set working directory
 WORKDIR /app
 
-# Copy only requirements first (better caching)
-COPY requirements.txt .
+# Copy requirements from subfolder
+COPY app/requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy rest of the app
-COPY . .
+# Copy the rest of the app
+COPY app/ .
 
 # Install system dependencies
 RUN apk add --no-cache \
@@ -23,8 +23,8 @@ RUN apk add --no-cache \
     make \
     aria2
 
-# Expose port (optional)
+# Expose port for Koyeb health check
 EXPOSE 8080
 
-# Start the app using Koyeb PORT env variable
+# Start Gunicorn using PORT env variable
 CMD ["sh", "-c", "gunicorn -w 4 -b 0.0.0.0:${PORT:-8080} main:app"]
